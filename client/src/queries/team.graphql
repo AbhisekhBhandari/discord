@@ -1,0 +1,43 @@
+mutation CreateTeam($input: CreateTeamInput!) {
+  createTeam(input: $input) {
+    teamId
+    teamImage
+    teamName
+  }
+}
+query GetUserTeams {
+  getUserTeams {
+    teamId
+    teamImage
+    teamName
+    defaultChannelId
+  }
+}
+
+query GetTeam($teamId: String!) {
+  getTeam(teamId: $teamId) {
+    teamId
+    teamImage
+    teamName
+  }
+}
+
+query GetTeamInvites {
+  getTeamInvites {
+    team {
+      teamId
+      teamImage
+      teamName
+    }
+    requestStatus
+  }
+}
+
+mutation InviteToTeam($teamId: String!, $userToInviteId: String!) {
+  inviteTeam(teamId: $teamId, userToInviteId: $userToInviteId)
+}
+
+
+mutation RespondTeamInvite($teamId: String!, $isAccepted: Boolean!) {
+  respondTeamInvite(teamId: $teamId, isAccepted: $isAccepted)
+}

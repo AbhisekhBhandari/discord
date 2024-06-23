@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId            String          @id @default(uuid())
+  username          String          @unique
+  email             String          @unique
+  password          String  
+  profileImage      String?
+  dateOfBirth       DateTime
+  createdAt         DateTime        @default(now())
+  teams             Team[]
+  members           Member[]
+  messages          Message[]
+  DirectMessageFrom DirectMessage[] @relation("sender")
+  DirectMessageTo   DirectMessage[] @relation("receiver")
+  sentRequests    FriendRequest[] @relation("sender")
+  receivedRequest FriendRequest[] @relation("receiver")
+  friend1         Friendship[]    @relation("friend1")
+  friend2         Friendship[]    @relation("friend2")
+  TeamRequest TeamRequest[]
+
+}
+
+model Member {
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [teamId])
+  userId String
+  user   User   @relation(fields: [userId], references: [userId])
+
+  @@id([teamId, userId])
+  @@unique([userId, teamId])
+}
+
+model Team {
+  teamId           String        @id @default(uuid())
+  teamName         String
+  teamImage        String?
+  ownerId          String
+  defaultChannelId String?
+  teamOwner        User          @relation(fields: [ownerId], references: [userId])
+  members          Member[]
+  channels         Channel[]
+  TeamRequest      TeamRequest[]
+}
+
+model Channel {
+  channelId   String      @id @default(uuid())
+  channelName String
+  channelType ChannelType @default(PUBLIC)
+  teamId      String
+  Team        Team        @relation(fields: [teamId], references: [teamId])
+  messages    Message[]
+}
+
+enum ChannelType {
+  PRIVATE
+  PUBLIC
+}
+
+model Message {
+  messageId String   @id @default(uuid())
+  message   String
+  senderId  String
+  Sender    User     @relation(fields: [senderId], references: [userId])
+  channelId String
+  channel   Channel  @relation(fields: [channelId], references: [channelId])
+  createdAt DateTime @default(now())
+}
+
+model DirectMessage {
+  messageId  String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation(fields: [senderId], references: [userId], name: "sender")
+  receiverId String
+  receiver   User     @relation(fields: [receiverId], references: [userId], name: "receiver")
+  type       DirectMessageTypes @default(TEXT)
+  message    String
+  createdAt  DateTime @default(now())
+}
+
+enum DirectMessageTypes {
+ TEXT 
+ MEDIA
+}
+
+enum FriendRequestStatus {
+  ACCEPTED
+  REJECTED
+  PENDING
+}
+
+model FriendRequest {
+  senderId      String
+  sender        User                @relation(fields: [senderId], references: [userId], name: "sender")
+  receiverId    String
+  receiver      User                @relation(fields: [receiverId], references: [userId], name: "receiver")
+  requestStatus FriendRequestStatus @default(PENDING)
+  createdAt     DateTime            @default(now())
+
+  @@id([senderId, receiverId])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+model TeamRequest {
+  teamId        String
+  team          Team                @relation(fields: [teamId], references: [teamId])
+  userId        String
+  user          User                @relation(fields: [userId], references: [userId])
+  requestStatus FriendRequestStatus @default(PENDING)
+  createdAt     DateTime            @default(now())
+
+  @@id([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+model Friendship {
+  friend1Id String
+  friend1   User     @relation("friend1", fields: [friend1Id], references: [userId])
+  friend2Id String
+  friend2   User     @relation("friend2", fields: [friend2Id], references: [userId])
+  createdAt DateTime @default(now())
+
+  @@id([friend1Id, friend2Id])
+  @@unique([friend1Id, friend2Id])
+}
+

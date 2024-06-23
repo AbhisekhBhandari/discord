@@ -1,0 +1,76 @@
+query GetMessagesWithChannel($channelId: String!, $messageCount: Int!, $page: Int) {
+  getMessages(channelId: $channelId, messageCount: $messageCount, page: $page) {
+    messages {
+      sender {
+        username
+        userId
+        profileImage
+      }
+      createdAt
+      message
+      messageId
+    }
+    channel {
+      teamId
+      channelName
+      channelType
+      channelId
+    }
+  }
+}
+
+query GetMessages($channelId: String!, $page: Int, $messageCount: Int!) {
+  getMessages(channelId: $channelId, page: $page, messageCount: $messageCount) {
+    messages {
+      sender {
+        username
+        userId
+        profileImage
+      }
+      messageId
+      message
+      createdAt
+    }
+  }
+}
+query GetDirectMessages($otherUserId: String!, $messageCount: Int!, $page: Int!) {
+  getDirectMessages(otherUserId: $otherUserId, messageCount: $messageCount, page: $page) {
+    messageId
+    sender {
+      username
+      userId
+      profileImage
+    }
+    createdAt
+    message
+  }
+}
+
+
+
+
+mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(input: $input) {
+    createdAt
+    message
+    messageId
+  }
+}
+
+mutation CreateDirectMessage($receiverId: String!, $text: String!) {
+  createDirectMessage(receiverId: $receiverId, text: $text)
+}
+
+subscription ChannelMessagaSubscription($channelId: String!) {
+  messageCreated(channelId: $channelId) {
+    message
+    messageId
+    createdAt
+    sender {
+      profileImage
+      userId
+      username
+    }
+  }
+}
+

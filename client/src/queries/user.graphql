@@ -1,0 +1,67 @@
+query GetUser($userId: String) {
+  getUser(userId: $userId) {
+    profileImage
+    userId
+    username
+  }
+}
+
+query GetUsers {
+  getUsers {
+    username
+    userId
+    profileImage
+  }
+}
+mutation FriendRequestSend($receiverId: ID!) {
+  friendRequestSend(receiverId: $receiverId)
+}
+query RetrieveUsersWithFriendRequestStatus {
+  retrieveUsersWithFriendRequestStatus {
+    username
+    userId
+    profileImage
+  }
+}
+query GetTeamUsers($teamId: String!) {
+  getTeamUsers(teamId: $teamId) {
+    username
+    userId
+    profileImage
+  }
+}
+
+query GetFriends {
+  getFriends {
+    username
+    userId
+    profileImage
+  }
+}
+
+mutation FriendRequestRespond($senderId: ID!, $isAccepted: Boolean!) {
+  friendRequestRespond(senderId: $senderId, isAccepted: $isAccepted)
+}
+
+
+query GetTeamInviteUsers($teamId: String!) {
+  getTeamInviteUsers(teamId: $teamId) {
+    username
+    userId
+    profileImage
+  }
+}
+
+query PendingRequestUsers {
+  pendingRequestUsers {
+    requestDirection
+    user {
+      username
+      userId
+      profileImage
+    }
+  }
+}
+mutation Logout {
+  logout
+}

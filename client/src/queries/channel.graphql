@@ -1,0 +1,32 @@
+query GetChannels($teamId: String!) {
+  getChannels(teamId: $teamId) {
+    __typename
+    ... on ChannelList {
+      channels {
+        channelId
+        channelName
+        channelType
+      }
+        team {
+          teamName
+          teamId
+        }
+    }
+    ... on ChannelError {
+      message
+      path
+    }
+  }
+}
+
+query GetChannel($channelId: String!) {
+  getChannel(channelId: $channelId) {
+    channelId
+    channelName
+  }
+}
+
+mutation CreateChannel($input: CreateChannelInput!) {
+  createChannel(input: $input)
+}
+

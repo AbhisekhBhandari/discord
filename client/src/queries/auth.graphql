@@ -1,0 +1,37 @@
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+     __typename
+    ... on User {
+      userId
+      username
+      email
+      profileImage
+      dateOfBirth
+      createdAt
+    }
+    ... on AuthError {
+      path
+      message
+    }
+  }
+}
+
+
+mutation Login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
+  __typename
+    ... on User {
+      userId
+      username
+      email
+      profileImage
+      dateOfBirth
+      createdAt
+    }
+    ... on AuthError {
+      path
+      message
+    }
+  }
+}
+
